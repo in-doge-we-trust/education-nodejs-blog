@@ -1,0 +1,19 @@
+{
+  "name": "education_nodejs_blog",
+  "author": {
+    "name": "Bulat Murtazin",
+    "email": "bulatf.murtazin@gmail.com"
+  },
+  "private": true,
+  "packageManager": "yarn@3.6.3",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^1.10.13"
+  }
+}

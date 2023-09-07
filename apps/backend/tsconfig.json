@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 18",
+  
+  "_version": "18.2.0",
+  
+  "compilerOptions": {
+    "lib": ["es2023"],
+    "module": "node16",
+    "target": "es2022",
+    "moduleResolution": "node16",
+    
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    
+    "isolatedModules": true,
+    
+    "baseUrl": ".",
+    "paths": {
+      "@env/*": ["./env/*"],
+      "@env": ["./env/index.ts"],
+      "@database/*": ["./database/*"]
+    }
+  },
+  
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

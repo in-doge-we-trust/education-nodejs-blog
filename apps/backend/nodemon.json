@@ -1,0 +1,5 @@
+{
+  "ext": "ts",
+  "watch": ["app", "database/dataSource.ts"],
+  "exec": "ts-node --esm app/index.ts"
+}
