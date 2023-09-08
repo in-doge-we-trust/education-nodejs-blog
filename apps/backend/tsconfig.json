@@ -29,11 +29,7 @@
     "isolatedModules": true,
     
     "baseUrl": ".",
-    "paths": {
-      "@env/*": ["./env/*"],
-      "@env": ["./env/index.ts"],
-      "@database/*": ["./database/*"]
-    }
+    "paths": {}
   },
   
   "ts-node": {

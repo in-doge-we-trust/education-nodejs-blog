@@ -1,39 +1,30 @@
 import fastify from 'fastify';
 
-import { APP_HOST, APP_PORT } from '@env';
+import { sequelize } from '../database/sequelize';
+
+import { sequelizePlugin } from './plugin/sequelize-plugin';
+import { userController } from './controller/user-controller';
+
+const app = fastify({ logger: true });
 
 async function run() {
-  const app = fastify({
-    logger: {
-      transport: {
-        target: 'pino-pretty',
-        options: {
-          ignore: 'pid,hostname',
-        },
-      },
-    },
+  // Init plugins
+  await app.register(sequelizePlugin);
+
+  // Init controllers
+  await app.register(userController, { prefix: '/users' });
+
+  // Test db connection
+  await sequelize.authenticate();
+
+  app.get('/', (_request, reply) => {
+    reply.code(200).send({ msg: 'Hello!' });
   });
 
-  app.get('/', (_, reply) => {
-    reply.code(200).send({ msg: 'Hello, traveler!' });
-  });
-
-  app.listen(
-    {
-      host: APP_HOST,
-      port: APP_PORT,
-    },
-    (err) => {
-      if (err) {
-        app.log.fatal(err);
-        process.exit(1);
-      }
-    },
-  );
-
-  return app;
+  await app.listen({ host: 'localhost', port: 8080 });
 }
 
-run().then((app) => {
-  app.log.info('App is up and running');
+run().catch((err) => {
+  app.log.error(err);
+  process.exit(1);
 });

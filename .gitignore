@@ -16,3 +16,6 @@ node_modules
 
 # JetBrains
 .idea
+
+# Environment
+.env

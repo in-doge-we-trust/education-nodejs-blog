@@ -2,15 +2,26 @@
   "name": "@enb/backend",
   "version": "0.0.1",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "NODE_ENV=development nodemon",
+    "test": "NODE_ENV=test echo \"Not implemented!\" && exit 1",
+    
+    "//": "Utilities for working with DB migrations",
+    "migrator": "node -r ts-node/register database/migrator.ts",
+    "migrator:create": "yarn migrator create --name",
+    "migrator:apply": "yarn migrator up",
+    "migrator:revert": "yarn migrator down",
+    "migrator:list-pending": "yarn migrator pending",
+    "migrator:list-executed": "yarn migrator executed"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
     "fastify": "^4.22.2",
+    "fastify-plugin": "^4.5.1",
     "nodemon": "^3.0.1",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1",
+    "umzug": "^3.3.1",
     "zod": "^3.22.2"
   },
   "devDependencies": {
