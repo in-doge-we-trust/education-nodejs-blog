@@ -28,8 +28,7 @@
     
     "isolatedModules": true,
     
-    "baseUrl": ".",
-    "paths": {}
+    "baseUrl": "."
   },
   
   "ts-node": {
