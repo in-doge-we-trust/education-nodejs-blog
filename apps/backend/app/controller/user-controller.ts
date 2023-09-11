@@ -1,26 +1,20 @@
 import { FastifyInstance } from 'fastify';
 
 import { UserModel } from '../model/user-model';
-import { UserReadDTO, UserCreateDTO, UserUpdateDTO } from '../dto/user-dto';
+import { UserReadDTO } from '../dto/user-dto';
+import type { UserCreateDTO, UserUpdateDTO } from '../dto/user-dto';
 
 export async function userController(fastify: FastifyInstance) {
   fastify.get<{ Reply: UserReadDTO[] }>('/', async (_req, reply) => {
     const users = await UserModel.findAll();
 
-    reply
-      .code(200)
-      .send(
-        users.map(
-          (userInstance) =>
-            new UserReadDTO(userInstance.id, userInstance.nickname, userInstance.email),
-        ),
-      );
+    reply.code(200).send(users.map(UserReadDTO.from));
   });
 
   fastify.post<{ Body: UserCreateDTO; Reply: UserReadDTO }>('/', async (req, reply) => {
     const newUser = await UserModel.create(req.body);
 
-    reply.code(201).send(new UserReadDTO(newUser.id, newUser.nickname, newUser.email));
+    reply.code(201).send(UserReadDTO.from(newUser));
   });
 
   interface PatchParams {
@@ -42,7 +36,7 @@ export async function userController(fastify: FastifyInstance) {
         nickname,
       });
 
-      reply.code(200).send(new UserReadDTO(updated.id, updated.nickname, updated.email));
+      reply.code(200).send(UserReadDTO.from(updated));
     },
   );
 

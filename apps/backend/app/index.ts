@@ -4,6 +4,7 @@ import { sequelize } from '../database/sequelize';
 
 import { sequelizePlugin } from './plugin/sequelize-plugin';
 import { userController } from './controller/user-controller';
+import { postController } from './controller/post-controller';
 
 const app = fastify({ logger: true });
 
@@ -13,6 +14,7 @@ async function run() {
 
   // Init controllers
   await app.register(userController, { prefix: '/users' });
+  await app.register(postController, { prefix: '/posts' });
 
   // Test db connection
   await sequelize.authenticate();

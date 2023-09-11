@@ -7,6 +7,7 @@ import {
 } from 'sequelize';
 
 import { sequelize } from '../../database/sequelize';
+import { PostModel } from './post-model';
 
 export class UserModel extends Model<
   InferAttributes<UserModel>,
@@ -38,3 +39,6 @@ UserModel.init(
     sequelize,
   },
 );
+
+UserModel.hasMany(PostModel, { foreignKey: 'authorId' });
+PostModel.belongsTo(UserModel, { foreignKey: 'authorId' });
