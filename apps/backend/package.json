@@ -4,14 +4,19 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
     "test": "NODE_ENV=test echo \"Not implemented!\" && exit 1",
-    
-    "//": "Utilities for working with DB migrations",
+    "//": "Utilities for working with DB seeds",
     "migrator": "node -r ts-node/register database/migrator.ts",
     "migrator:create": "yarn migrator create --name",
     "migrator:apply": "yarn migrator up",
     "migrator:revert": "yarn migrator down",
     "migrator:list-pending": "yarn migrator pending",
-    "migrator:list-executed": "yarn migrator executed"
+    "migrator:list-executed": "yarn migrator executed",
+    "seeder": "node -r ts-node/register database/seeder.ts",
+    "seeder:create": "yarn seeder create --name",
+    "seeder:apply": "yarn seeder up",
+    "seeder:revert": "yarn seeder down",
+    "seeder:list-pending": "yarn seeder pending",
+    "seeder:list-executed": "yarn seeder executed"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
