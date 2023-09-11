@@ -1,32 +1,32 @@
 import { FastifyInstance } from 'fastify';
 
 import { UserModel } from '../model/user-model';
-import type { UserReadDto, UserCreateDto, UserUpdateDto } from '../dto/user-dto';
+import { UserReadDTO, UserCreateDTO, UserUpdateDTO } from '../dto/user-dto';
 
 export async function userController(fastify: FastifyInstance) {
-  fastify.get<{ Reply: UserReadDto[] }>('/', async (_req, reply) => {
+  fastify.get<{ Reply: UserReadDTO[] }>('/', async (_req, reply) => {
     const users = await UserModel.findAll();
 
-    reply.code(200).send(
-      users.map((userInstance) => ({
-        id: userInstance.getDataValue('id'),
-        nickname: userInstance.getDataValue('nickname'),
-        email: userInstance.getDataValue('email'),
-      })),
-    );
+    reply
+      .code(200)
+      .send(
+        users.map(
+          (userInstance) =>
+            new UserReadDTO(userInstance.id, userInstance.nickname, userInstance.email),
+        ),
+      );
   });
 
-  fastify.post<{ Body: UserCreateDto; Reply: UserReadDto }>('/', async (req, reply) => {
+  fastify.post<{ Body: UserCreateDTO; Reply: UserReadDTO }>('/', async (req, reply) => {
     const newUser = await UserModel.create(req.body);
 
-    reply.code(201).send({
-      id: newUser.getDataValue('id'),
-      nickname: newUser.getDataValue('nickname'),
-      email: newUser.getDataValue('email'),
-    });
+    reply.code(201).send(new UserReadDTO(newUser.id, newUser.nickname, newUser.email));
   });
 
-  fastify.patch<{ Params: { userId: string }; Body: UserUpdateDto }>(
+  interface PatchParams {
+    userId: UserModel['id'];
+  }
+  fastify.patch<{ Params: PatchParams; Body: UserUpdateDTO }>(
     '/:userId',
     async (request, reply) => {
       const { userId } = request.params;
@@ -42,11 +42,14 @@ export async function userController(fastify: FastifyInstance) {
         nickname,
       });
 
-      reply.code(200).send(updated);
+      reply.code(200).send(new UserReadDTO(updated.id, updated.nickname, updated.email));
     },
   );
 
-  fastify.delete<{ Params: { userId: number } }>('/:userId', async (req, reply) => {
+  interface DeleteParams {
+    userId: UserModel['id'];
+  }
+  fastify.delete<{ Params: DeleteParams }>('/:userId', async (req, reply) => {
     const { userId } = req.params;
 
     const userToDelete = await UserModel.findByPk(userId);

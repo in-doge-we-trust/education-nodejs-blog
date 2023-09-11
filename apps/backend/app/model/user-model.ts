@@ -8,16 +8,10 @@ import {
 
 import { sequelize } from '../../database/sequelize';
 
-interface UserShape {
-  id: number;
-  nickname: string;
-  email: string;
-}
-
-export class UserModel
-  extends Model<InferAttributes<UserModel>, InferCreationAttributes<UserModel>>
-  implements UserShape
-{
+export class UserModel extends Model<
+  InferAttributes<UserModel>,
+  InferCreationAttributes<UserModel>
+> {
   declare id: CreationOptional<number>;
   declare nickname: string;
   declare email: string;
