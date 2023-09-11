@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "NODE_ENV=development nodemon",
     "test": "NODE_ENV=test echo \"Not implemented!\" && exit 1",
+    
     "//": "Utilities for working with DB seeds",
     "migrator": "node -r ts-node/register database/migrator.ts",
     "migrator:create": "yarn migrator create --name",
@@ -11,6 +12,8 @@
     "migrator:revert": "yarn migrator down",
     "migrator:list-pending": "yarn migrator pending",
     "migrator:list-executed": "yarn migrator executed",
+    
+    "//": "Utilities to work with seeds",
     "seeder": "node -r ts-node/register database/seeder.ts",
     "seeder:create": "yarn seeder create --name",
     "seeder:apply": "yarn seeder up",
