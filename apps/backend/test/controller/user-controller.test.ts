@@ -1,6 +1,7 @@
+import { FastifyInstance } from 'fastify';
+
 import { createApp } from '../../app/app';
 import { UserModel } from '../../app/model/user-model';
-import { FastifyInstance } from 'fastify';
 import { UserCreateDTO, UserReadDTO } from '../../app/dto/user-dto';
 
 const ROUTE_PATH_BASE = '/users';
