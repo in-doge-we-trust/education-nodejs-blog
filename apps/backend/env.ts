@@ -12,6 +12,7 @@ if (nodeEnv === 'development') {
 }
 
 export const APP_HOST = process.env['APP_HOST'] ?? 'localhost';
+export const APP_LOGGING_PRETTY = nodeEnv !== 'production';
 
 export const DB_NAME = process.env['DB_NAME'];
 export const DB_PORT = parseInt(process.env['DB_PORT'] ?? '5432', 10);
