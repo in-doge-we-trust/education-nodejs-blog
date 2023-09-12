@@ -1,20 +1,9 @@
-import fastify from 'fastify';
-
 import { sequelize } from '../database/sequelize';
 
-import { sequelizePlugin } from './plugin/sequelize-plugin';
-import { userController } from './controller/user-controller';
-import { postController } from './controller/post-controller';
-
-const app = fastify({ logger: true });
+import { createApp } from './app';
 
 async function run() {
-  // Init plugins
-  await app.register(sequelizePlugin);
-
-  // Init controllers
-  await app.register(userController, { prefix: '/users' });
-  await app.register(postController, { prefix: '/posts' });
+  const app = await createApp();
 
   // Test db connection
   await sequelize.authenticate();
@@ -27,6 +16,6 @@ async function run() {
 }
 
 run().catch((err) => {
-  app.log.error(err);
+  console.error(err);
   process.exit(1);
 });

@@ -1,7 +1,7 @@
 import { UserModel } from '../model/user-model';
 
 export class UserReadDTO {
-  private constructor(
+  constructor(
     readonly id: UserModel['id'],
     readonly nickname: UserModel['nickname'],
     readonly email: UserModel['email'],
@@ -13,19 +13,18 @@ export class UserReadDTO {
 }
 
 export class UserCreateDTO {
-  private constructor(
+  constructor(
     readonly nickname: UserModel['nickname'],
     readonly email: UserModel['email'],
   ) {}
 
-  static from() {
-    // TODO: implement this
-    throw new Error('Not implemented!');
+  static from(model: UserModel) {
+    return new UserCreateDTO(model.nickname, model.email);
   }
 }
 
 export class UserUpdateDTO {
-  private constructor(readonly nickname: UserModel['nickname']) {}
+  constructor(readonly nickname: UserModel['nickname']) {}
 
   static from() {
     // TODO: implement this

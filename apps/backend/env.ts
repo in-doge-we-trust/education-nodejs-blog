@@ -11,8 +11,6 @@ if (nodeEnv === 'development') {
   // Do nothing
 }
 
-dotenv.config();
-
 export const APP_HOST = process.env['APP_HOST'] ?? 'localhost';
 
 export const DB_NAME = process.env['DB_NAME'];
