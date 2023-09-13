@@ -12,7 +12,13 @@
     "vue": "^3.3.4"
   },
   "devDependencies": {
+    "@enb/prettier-config": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "@vitejs/plugin-vue": "^4.2.3",
+    "eslint": "^8.49.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-vue": "latest",
     "prettier": "3.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
