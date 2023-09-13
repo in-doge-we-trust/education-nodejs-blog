@@ -4,6 +4,8 @@ import { VueQueryPlugin } from '@tanstack/vue-query';
 import { queryClient } from './query/queryClient.ts';
 import App from './App.vue';
 
+import './date/dayjs.ts';
+
 import './style/tailwind.css';
 
 const app = createApp(App);

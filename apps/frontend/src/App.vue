@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { usePostsQuery } from './query/post.ts';
+  import ThePostPreview from './components/ThePostPreview.vue';
 
   const { data: posts, isLoading: arePostsLoading } = usePostsQuery();
 </script>
@@ -13,19 +14,7 @@
       <p>Loading posts...</p>
     </div>
     <div v-else class="flex flex-col gap-4">
-      <article
-        v-for="post in posts"
-        :key="post.id"
-        class="flex flex-col gap-2 p-4 border border-neutral-100 rounded-sm shadow-md"
-      >
-        <h2 class="text-2xl">
-          {{ post.title }}
-        </h2>
-
-        <p>
-          {{ post.content }}
-        </p>
-      </article>
+      <ThePostPreview v-for="post in posts" :key="post.id" :post="post" />
     </div>
   </main>
 </template>
