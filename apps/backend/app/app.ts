@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import fastifyCors from '@fastify/cors';
 
 import { sequelizePlugin } from './plugin/sequelize-plugin';
 import { userController } from './controller/user-controller';
@@ -24,6 +25,20 @@ export async function createApp() {
    * request payloads natively. We want only application/json.
    */
   fastify.removeContentTypeParser('text/plain');
+
+  // Set up CORS
+  await fastify.register(fastifyCors, {
+    origin: (origin, cb) => {
+      const hostname = new URL(origin ?? '').hostname;
+
+      if (hostname === 'localhost') {
+        cb(null, true);
+        return;
+      }
+
+      cb(new Error('Not Allowed'), false);
+    },
+  });
 
   // Init plugins
   await fastify.register(sequelizePlugin);

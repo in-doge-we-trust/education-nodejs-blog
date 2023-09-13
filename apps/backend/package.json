@@ -19,6 +19,7 @@
     "test:migrate-db": "NODE_ENV=test yarn migrator up"
   },
   "dependencies": {
+    "@fastify/cors": "^8.3.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.22.2",
     "fastify-plugin": "^4.5.1",
