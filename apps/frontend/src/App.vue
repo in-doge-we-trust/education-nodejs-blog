@@ -16,7 +16,7 @@
       <article
         v-for="post in posts"
         :key="post.id"
-        class="flex flex-col gap-2 p-4 border border-neutral-100 shadow-md"
+        class="flex flex-col gap-2 p-4 border border-neutral-100 rounded-sm shadow-md"
       >
         <h2 class="text-2xl">
           {{ post.title }}
