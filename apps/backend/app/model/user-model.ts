@@ -28,10 +28,12 @@ UserModel.init(
     nickname: {
       type: DataTypes.STRING(250),
       unique: true,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING(250),
       unique: true,
+      allowNull: false,
     },
   },
   {
