@@ -16,6 +16,7 @@ export class PostModel extends Model<
   declare title: string;
   declare content: string;
   declare authorId: number;
+  declare createdAt: CreationOptional<Date>;
 }
 
 PostModel.init(
@@ -36,6 +37,9 @@ PostModel.init(
     authorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
     },
   },
   { sequelize, tableName: 'posts' },

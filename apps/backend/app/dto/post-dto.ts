@@ -6,10 +6,17 @@ export class PostReadDTO {
     readonly title: PostModel['title'],
     readonly content: PostModel['content'],
     readonly authorId: PostModel['authorId'],
+    readonly createdAt: PostModel['createdAt'],
   ) {}
 
   static from(model: PostModel) {
-    return new PostReadDTO(model.id, model.title, model.content, model.authorId);
+    return new PostReadDTO(
+      model.id,
+      model.title,
+      model.content,
+      model.authorId,
+      model.createdAt,
+    );
   }
 }
 
