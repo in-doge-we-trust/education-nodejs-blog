@@ -1,7 +1,7 @@
 import { PostModel } from '../model/post-model';
 
 export class PostReadDTO {
-  private constructor(
+  constructor(
     readonly id: PostModel['id'],
     readonly title: PostModel['title'],
     readonly content: PostModel['content'],
@@ -14,7 +14,14 @@ export class PostReadDTO {
 }
 
 export class PostCreateDTO {
-  private constructor(
+  constructor(
+    readonly title: PostModel['title'],
+    readonly content: PostModel['content'],
+  ) {}
+}
+
+export class PostUpdateDTO {
+  constructor(
     readonly title: PostModel['title'],
     readonly content: PostModel['content'],
   ) {}
