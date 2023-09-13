@@ -28,16 +28,7 @@ export async function createApp() {
 
   // Set up CORS
   await fastify.register(fastifyCors, {
-    origin: (origin, cb) => {
-      const hostname = new URL(origin ?? '').hostname;
-
-      if (hostname === 'localhost') {
-        cb(null, true);
-        return;
-      }
-
-      cb(new Error('Not Allowed'), false);
-    },
+    origin: /^localhost$/,
   });
 
   // Init plugins
