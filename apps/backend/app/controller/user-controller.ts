@@ -1,8 +1,7 @@
 import { FastifyInstance } from 'fastify';
 
 import { UserModel } from '../model/user-model';
-import { UserReadDTO } from '../dto/user-dto';
-import type { UserCreateDTO, UserUpdateDTO } from '../dto/user-dto';
+import type { UserReadDTO, UserCreateDTO, UserUpdateDTO } from '../dto/user-dto';
 import { UserService } from '../service/user-service';
 
 export async function userController(fastify: FastifyInstance) {
@@ -10,6 +9,20 @@ export async function userController(fastify: FastifyInstance) {
     const users = await UserService.getAll();
 
     reply.code(200).send(users);
+  });
+
+  interface GetOneParams {
+    userId: number;
+  }
+  fastify.get<{ Params: GetOneParams }>('/:userId', async (req, reply) => {
+    const { userId } = req.params;
+    const user = await UserService.getById(userId);
+
+    if (user) {
+      return reply.code(200).send(user);
+    }
+
+    return reply.code(404).send({ msg: `User with id=${userId} was not found!` });
   });
 
   fastify.post<{ Body: UserCreateDTO; Reply: UserReadDTO }>('/', async (req, reply) => {
