@@ -19,6 +19,12 @@ export async function createApp() {
       : true,
   });
 
+  /**
+   * Fastify supports parsing both text/plain and application/json
+   * request payloads natively. We want only application/json.
+   */
+  fastify.removeContentTypeParser('text/plain');
+
   // Init plugins
   await fastify.register(sequelizePlugin);
 
