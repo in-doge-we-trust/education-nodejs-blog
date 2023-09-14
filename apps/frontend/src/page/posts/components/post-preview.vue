@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import dayjs from 'dayjs';
+
   import { useUserQuery } from '../../../query/user.ts';
+  import BaseCard from '../../../components/BaseCard.vue';
 
   const { post } = defineProps<{
     post: {
@@ -23,10 +25,7 @@
 </script>
 
 <template>
-  <article
-    :key="post.id"
-    class="flex flex-col gap-2 p-4 border border-neutral-100 rounded-sm shadow-md"
-  >
+  <base-card>
     <header class="mb-2">
       <h2 class="mb-1 text-2xl hover:text-cyan-700 transition-colors duration-300">
         <router-link :to="{ name: 'post', params: { postId: post.id } }">
@@ -57,7 +56,7 @@
         Read more
       </router-link>
     </p>
-  </article>
+  </base-card>
 </template>
 
 <style scoped></style>
