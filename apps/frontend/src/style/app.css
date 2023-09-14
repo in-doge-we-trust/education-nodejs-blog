@@ -1,0 +1,7 @@
+html {
+  @apply text-neutral-600;
+}
+
+body {
+  @apply bg-neutral-100;
+}

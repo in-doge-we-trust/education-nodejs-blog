@@ -1,4 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/vue-query';
+import { Ref } from 'vue';
+import { useMutation, useQuery, UseQueryOptions } from '@tanstack/vue-query';
 
 import { apiClient } from '../api/client.ts';
 
@@ -15,10 +16,14 @@ export function usePostsQuery() {
 function getPostQueryKey(postId: number) {
   return ['posts', postId];
 }
-export function usePostQuery(postId: number) {
-  return useQuery(getPostQueryKey(postId), async () => {
-    const resp = await apiClient.get(`/posts/${postId}`);
-    return resp.data;
+export function usePostQuery(postId: Ref<number>, options?: UseQueryOptions) {
+  return useQuery({
+    queryKey: getPostQueryKey(postId.value),
+    queryFn: async () => {
+      const resp = await apiClient.get(`/posts/${postId.value}`);
+      return resp.data;
+    },
+    ...options,
   });
 }
 
