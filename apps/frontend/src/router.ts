@@ -21,5 +21,10 @@ export const router = createRouter({
       name: 'post',
       component: ThePostPage,
     },
+    {
+      path: '/users/:userId',
+      name: 'user',
+      component: () => {},
+    },
   ],
 });

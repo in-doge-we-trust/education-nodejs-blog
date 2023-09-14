@@ -25,26 +25,34 @@
 </script>
 
 <template>
-  <base-card>
-    <header class="mb-2">
-      <h2 class="mb-1 text-2xl hover:text-cyan-700 transition-colors duration-300">
-        <router-link :to="{ name: 'post', params: { postId: post.id } }">
+  <base-card tag="article">
+    <template #header>
+      <h2 class="mb-1 text-2xl font-medium">
+        <router-link
+          :to="{ name: 'post', params: { postId: post.id } }"
+          class="hover:text-cyan-700 transition-colors duration-300"
+        >
           {{ post.title }}
         </router-link>
       </h2>
 
-      <p class="text-xs text-neutral-500 italic">
+      <p class="text-sm text-neutral-500 italic">
         Posted
-        <strong class="font-semibold text-neutral-500" :title="postedAtPretty">
+        <span :title="postedAtPretty" class="font-semibold cursor-help">
           {{ postedAgo }}
-        </strong>
+        </span>
 
         <template v-if="author?.nickname">
           by
-          <strong class="font-semibold text-neutral-500">{{ author.nickname }}</strong>
+          <router-link
+            :to="{ name: 'user', params: { userId: author?.id } }"
+            class="text-cyan-700 font-semibold"
+          >
+            {{ author?.nickname }}
+          </router-link>
         </template>
       </p>
-    </header>
+    </template>
 
     <p>
       {{ contentPreview }}
