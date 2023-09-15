@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { usePostsQuery } from '../../query/post.ts';
+  import BaseButton from '../../components/BaseButton.vue';
 
   import PostPreview from './components/post-preview.vue';
 
@@ -7,9 +8,14 @@
 </script>
 
 <template>
-  <main class="p-6">
-    <h1 class="text-3xl text-cyan-700 mb-6">All posts</h1>
+  <header class="flex flex-row justify-between items-center p-6 pb-3">
+    <h1 class="text-3xl text-cyan-700">All posts</h1>
 
+    <base-button variant="primary" @click="$router.push({ name: 'posts-add' })">
+      + New post
+    </base-button>
+  </header>
+  <main class="p-6 pt-3">
     <div v-if="arePostsLoading">
       <p>Loading posts...</p>
     </div>

@@ -3,15 +3,10 @@
 
   import { useUserQuery } from '../../../query/user.ts';
   import BaseCard from '../../../components/BaseCard.vue';
+  import { Post } from '../../../types/post.ts';
 
   const { post } = defineProps<{
-    post: {
-      id: number;
-      title: string;
-      content: string;
-      authorId: number;
-      createdAt: string;
-    };
+    post: Post;
   }>();
 
   const { data: author } = useUserQuery(post.authorId);
@@ -20,8 +15,9 @@
   const postedAtPretty = postedAt.format('ddd, MMM DD, YYYY [at] HH:MM');
   const postedAgo = postedAt.fromNow();
 
-  const contentPreview = post.content.substring(0, 120);
-  const isContentTruncated = post.content.length > 120;
+  const POST_PREVIEW_TEXT_LENGTH = 256;
+  const contentPreview = post.content.substring(0, POST_PREVIEW_TEXT_LENGTH);
+  const isContentTruncated = post.content.length > POST_PREVIEW_TEXT_LENGTH;
 </script>
 
 <template>
@@ -45,17 +41,17 @@
         <template v-if="author?.nickname">
           by
           <router-link
-            :to="{ name: 'user', params: { userId: author?.id } }"
+            :to="{ name: 'user', params: { userId: author.id } }"
             class="text-cyan-700 font-semibold"
           >
-            {{ author?.nickname }}
+            {{ author.nickname }}
           </router-link>
         </template>
       </p>
     </template>
 
     <p>
-      {{ contentPreview }}
+      {{ contentPreview }}{{ isContentTruncated ? '...' : '' }}
       <router-link
         v-if="isContentTruncated"
         :to="{ name: 'post', params: { postId: post.id } }"
