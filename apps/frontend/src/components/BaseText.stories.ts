@@ -41,6 +41,9 @@ export const Default: Story = {
       <base-text v-bind="args" variant="body3">
         Body 3
       </base-text>
+      <base-text v-bind="args" variant="label">
+          Label
+      </base-text>
     `,
   }),
 };

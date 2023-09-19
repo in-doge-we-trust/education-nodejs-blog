@@ -17,9 +17,15 @@
   } as const;
   type BodyKind = 'default' | 'medium' | 'semibold';
 
+  type LabelVariant = 'label';
+  const labelVariantToTagMap: Record<LabelVariant, string> = {
+    label: 'span',
+  };
+
   const variantToTagMap = {
     ...headerVariantToTagMap,
     ...bodyVariantToTagMap,
+    ...labelVariantToTagMap,
   };
 
   type Color = 'primary' | 'secondary' | 'accent' | 'highlight';
@@ -32,13 +38,21 @@
     | {
         variant: BodyVariant;
         kind?: BodyKind;
+      }
+    | {
+        variant: 'label';
+        kind?: undefined;
       };
-  const props = withDefaults(defineProps<VariantKindProps & { color?: Color }>(), {
-    kind: 'default',
-    color: 'primary',
-  });
+  const props = withDefaults(
+    defineProps<VariantKindProps & { tag?: string; color?: Color }>(),
+    {
+      kind: 'default',
+      tag: undefined,
+      color: 'primary',
+    },
+  );
 
-  const tag = computed(() => variantToTagMap[props.variant]);
+  const tag = computed(() => props.tag ?? variantToTagMap[props.variant]);
 </script>
 
 <template>
@@ -71,7 +85,8 @@
     @apply font-normal;
   }
 
-  .body2 {
+  .body2,
+  .label {
     @apply text-sm font-normal;
   }
 

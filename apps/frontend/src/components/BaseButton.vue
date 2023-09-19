@@ -43,6 +43,7 @@
     @apply font-semibold;
     @apply transition-colors duration-150;
     @apply cursor-pointer disabled:cursor-not-allowed;
+    @apply outline-none;
   }
 
   .primary {
@@ -50,6 +51,7 @@
     @apply border-2 border-pink-500;
     @apply active:bg-pink-600 active:border-pink-600;
     @apply disabled:bg-pink-300 disabled:border-pink-300;
+    @apply focus:ring-4 focus:ring-pink-300;
   }
 
   .secondary {
