@@ -6,7 +6,7 @@ export class PostReadDTO {
     readonly title: PostModel['title'],
     readonly content: PostModel['content'],
     readonly authorId: PostModel['authorId'],
-    readonly createdAt: PostModel['createdAt'],
+    readonly createdAt: string, // from PostModel['createdAt']
   ) {}
 
   static from(model: PostModel) {
@@ -15,7 +15,7 @@ export class PostReadDTO {
       model.title,
       model.content,
       model.authorId,
-      model.createdAt,
+      model.createdAt.toISOString(),
     );
   }
 }

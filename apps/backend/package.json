@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@enb/prettier-config": "workspace:*",
-    "@types/jest": "^29.5.4",
+    "@types/jest": "^29.5.5",
     "@types/node": "^18.17.1",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",

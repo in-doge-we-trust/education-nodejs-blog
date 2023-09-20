@@ -14,16 +14,19 @@ export async function userController(fastify: FastifyInstance) {
   interface GetOneParams {
     userId: number;
   }
-  fastify.get<{ Params: GetOneParams }>('/:userId', async (req, reply) => {
-    const { userId } = req.params;
-    const user = await UserService.getById(userId);
+  fastify.get<{ Params: GetOneParams; Reply: UserReadDTO | { msg: string } }>(
+    '/:userId',
+    async (req, reply) => {
+      const { userId } = req.params;
+      const user = await UserService.getById(userId);
 
-    if (user) {
-      return reply.code(200).send(user);
-    }
+      if (user) {
+        return reply.code(200).send(user);
+      }
 
-    return reply.code(404).send({ msg: `User with id=${userId} was not found!` });
-  });
+      return reply.code(404).send({ msg: `User with id=${userId} was not found!` });
+    },
+  );
 
   fastify.post<{ Body: UserCreateDTO; Reply: UserReadDTO }>('/', async (req, reply) => {
     const newUser = await UserService.create(req.body);
@@ -34,32 +37,36 @@ export async function userController(fastify: FastifyInstance) {
   interface PatchParams {
     userId: UserModel['id'];
   }
-  fastify.patch<{ Params: PatchParams; Body: UserUpdateDTO }>(
-    '/:userId',
-    async (request, reply) => {
-      const { userId } = request.params;
+  fastify.patch<{
+    Params: PatchParams;
+    Body: UserUpdateDTO;
+    Reply: UserReadDTO | { msg: string };
+  }>('/:userId', async (request, reply) => {
+    const { userId } = request.params;
 
-      const updatedUser = await UserService.update(userId, request.body);
-      if (updatedUser) {
-        return reply.code(200).send(updatedUser);
+    const updatedUser = await UserService.update(userId, request.body);
+    if (updatedUser) {
+      return reply.code(200).send(updatedUser);
+    }
+
+    return reply.code(404).send({ msg: `User with id=${userId} was not found!` });
+  });
+
+  interface DeleteParams {
+    userId: UserModel['id'];
+  }
+  fastify.delete<{ Params: DeleteParams; Reply: { msg: string } }>(
+    '/:userId',
+    async (req, reply) => {
+      const { userId } = req.params;
+
+      const success = await UserService.delete(userId);
+
+      if (success) {
+        return reply.code(200).send({ msg: 'User was deleted successfully!' });
       }
 
       return reply.code(404).send({ msg: `User with id=${userId} was not found!` });
     },
   );
-
-  interface DeleteParams {
-    userId: UserModel['id'];
-  }
-  fastify.delete<{ Params: DeleteParams }>('/:userId', async (req, reply) => {
-    const { userId } = req.params;
-
-    const success = await UserService.delete(userId);
-
-    if (success) {
-      return reply.code(200).send({ msg: 'User was deleted successfully!' });
-    }
-
-    return reply.code(404).send({ msg: `User with id=${userId} was not found!` });
-  });
 }
