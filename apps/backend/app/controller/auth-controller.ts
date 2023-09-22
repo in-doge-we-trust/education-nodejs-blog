@@ -32,18 +32,7 @@ export async function authController(fastify: FastifyInstance) {
     const user = await UserService.Admin__getByEmail(email);
 
     if (user && user.password === password) {
-      const currentDate = new Date();
-
-      const accessTokenExpDate = new Date(currentDate.valueOf());
-      accessTokenExpDate.setMinutes(accessTokenExpDate.getMinutes() + 30); // expire in 30 minutes
-      const accessToken = fastify.jwt.sign(
-        {
-          id: user.id,
-        },
-        { expiresIn: accessTokenExpDate.toUTCString() },
-      );
-
-      const refreshTokenExpDate = new Date(currentDate.valueOf());
+      const refreshTokenExpDate = new Date();
       refreshTokenExpDate.setDate(refreshTokenExpDate.getDate() + 7); // expire in 7 days
       const refreshToken = fastify.jwt.sign(
         {
@@ -52,19 +41,32 @@ export async function authController(fastify: FastifyInstance) {
         { expiresIn: refreshTokenExpDate.toUTCString() },
       );
 
-      // Put refresh token into the DB
-      await AuthTokenModel.create({
-        userId: user.id,
-        token: refreshToken,
-        validUntil: refreshTokenExpDate,
-      });
+      try {
+        // Put refresh token into the DB
+        await AuthTokenModel.create({
+          userId: user.id,
+          token: refreshToken,
+          validUntil: refreshTokenExpDate,
+        });
+      } catch {
+        return reply.code(500).send({ msg: 'Internal server error' });
+      }
+
+      const accessTokenExpDate = new Date();
+      accessTokenExpDate.setMinutes(accessTokenExpDate.getMinutes() + 30); // expire in 30 minutes
+      const accessToken = fastify.jwt.sign(
+        {
+          id: user.id,
+        },
+        { expiresIn: accessTokenExpDate.toUTCString() },
+      );
 
       return reply
-        .setCookie(APP_JWT_ACCESS_COOKIE_NAME, accessToken, {
+        .setCookie(APP_JWT_REFRESH_COOKIE_NAME, refreshToken, {
           httpOnly: true,
           signed: true,
         })
-        .setCookie(APP_JWT_REFRESH_COOKIE_NAME, refreshToken, {
+        .setCookie(APP_JWT_ACCESS_COOKIE_NAME, accessToken, {
           httpOnly: true,
           signed: true,
         })

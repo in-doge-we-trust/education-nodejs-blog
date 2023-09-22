@@ -35,20 +35,20 @@ export async function createApp() {
     origin: /^http:\/\/localhost/,
   });
 
-  // Set up JWT
-  if (!APP_JWT_SECRET) {
-    throw new Error('JWT secret is not provided!');
-  }
-  await fastify.register(fastifyJwt, {
-    secret: APP_JWT_SECRET,
-  });
-
   // Set up cookies
   if (!APP_COOKIE_SECRET) {
     throw new Error('Cookie signing secret is not provided!');
   }
   await fastify.register(fastifyCookie, {
     secret: APP_COOKIE_SECRET,
+  });
+
+  // Set up JWT
+  if (!APP_JWT_SECRET) {
+    throw new Error('JWT secret is not provided!');
+  }
+  await fastify.register(fastifyJwt, {
+    secret: APP_JWT_SECRET,
   });
 
   // Init plugins
