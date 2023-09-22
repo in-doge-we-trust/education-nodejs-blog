@@ -15,6 +15,9 @@ export const APP_HOST = process.env['APP_HOST'] ?? 'localhost';
 export const APP_LOGGING_PRETTY = nodeEnv !== 'production';
 
 export const APP_JWT_SECRET = process.env['APP_JWT_SECRET'];
+export const APP_JWT_ACCESS_COOKIE_NAME = process.env['APP_JWT_ACCESS_COOKIE_NAME'];
+export const APP_JWT_REFRESH_COOKIE_NAME = process.env['APP_JWT_REFRESH_COOKIE_NAME'];
+
 export const APP_COOKIE_SECRET = process.env['APP_COOKIE_SECRET'];
 
 export const DB_NAME = process.env['DB_NAME'];

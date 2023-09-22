@@ -1,4 +1,9 @@
-import { UserCreateDTO, UserReadDTO, UserUpdateDTO } from '../dto/user-dto';
+import {
+  Admin__UserReadDTO,
+  UserCreateDTO,
+  UserReadDTO,
+  UserUpdateDTO,
+} from '../dto/user-dto';
 import { UserModel } from '../model/user-model';
 
 export class UserService {
@@ -12,6 +17,14 @@ export class UserService {
     const user = await UserModel.findByPk(id);
 
     return user ? UserReadDTO.from(user) : null;
+  }
+
+  static async Admin__getByEmail(
+    email: UserModel['email'],
+  ): Promise<Admin__UserReadDTO | null> {
+    const user = await UserModel.findOne({ where: { email } });
+
+    return user ? Admin__UserReadDTO.from(user) : null;
   }
 
   static async create(data: UserCreateDTO): Promise<UserReadDTO> {

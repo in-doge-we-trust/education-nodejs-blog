@@ -1,13 +1,14 @@
 import Fastify from 'fastify';
 import fastifyCors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
+import fastifyCookie from '@fastify/cookie';
 
 import { APP_COOKIE_SECRET, APP_JWT_SECRET, APP_LOGGING_PRETTY } from '../env';
 
 import { sequelizePlugin } from './plugin/sequelize-plugin';
+import { authController } from './controller/auth-controller';
 import { userController } from './controller/user-controller';
 import { postController } from './controller/post-controller';
-import fastifyCookie from '@fastify/cookie';
 
 export async function createApp() {
   const fastify = Fastify({
@@ -54,6 +55,7 @@ export async function createApp() {
   await fastify.register(sequelizePlugin);
 
   // Init controllers
+  await fastify.register(authController, { prefix: '/auth' });
   await fastify.register(userController, { prefix: '/users' });
   await fastify.register(postController, { prefix: '/posts' });
 

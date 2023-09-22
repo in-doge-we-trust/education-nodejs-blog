@@ -12,6 +12,19 @@ export class UserReadDTO {
   }
 }
 
+export class Admin__UserReadDTO {
+  constructor(
+    readonly id: UserModel['id'],
+    readonly nickname: UserModel['nickname'],
+    readonly email: UserModel['email'],
+    readonly password: UserModel['password'],
+  ) {}
+
+  static from(model: UserModel) {
+    return new Admin__UserReadDTO(model.id, model.nickname, model.email, model.password);
+  }
+}
+
 export class UserCreateDTO {
   constructor(
     readonly nickname: UserModel['nickname'],
