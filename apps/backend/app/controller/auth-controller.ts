@@ -6,6 +6,14 @@ import { AuthTokenReadDto } from '../dto/auth-token-dto';
 import { UserService } from '../service/user-service';
 import { AuthTokenModel } from '../model/auth-token';
 
+interface AuthTokenPayload {
+  type: 'refresh' | 'access';
+  userId: number;
+}
+interface AuthTokenPayloadDecoded extends AuthTokenPayload {
+  expiresIn: string;
+}
+
 export async function authController(fastify: FastifyInstance) {
   fastify.addHook('onRequest', (_req, reply, done) => {
     const mandatoryEnvVariables = [
@@ -45,12 +53,13 @@ export async function authController(fastify: FastifyInstance) {
     if (user && user.password === password) {
       const refreshTokenExpDate = new Date();
       refreshTokenExpDate.setDate(refreshTokenExpDate.getDate() + 7); // expire in 7 days
-      const refreshToken = fastify.jwt.sign(
-        {
-          id: user.id,
-        },
-        { expiresIn: refreshTokenExpDate.toUTCString() },
-      );
+      const refreshTokenPayload: AuthTokenPayload = {
+        type: 'refresh',
+        userId: user.id,
+      };
+      const refreshToken = fastify.jwt.sign(refreshTokenPayload, {
+        expiresIn: refreshTokenExpDate.toUTCString(),
+      });
 
       try {
         // Put refresh token into the DB
@@ -60,18 +69,20 @@ export async function authController(fastify: FastifyInstance) {
           validUntil: refreshTokenExpDate,
         });
       } catch (e) {
-        console.error(e);
-        return reply.code(500).send({ msg: 'Internal server error' });
+        return reply
+          .code(500)
+          .send({ msg: 'Internal server error. Reason: could not create auth token' });
       }
 
       const accessTokenExpDate = new Date();
       accessTokenExpDate.setMinutes(accessTokenExpDate.getMinutes() + 30); // expire in 30 minutes
-      const accessToken = fastify.jwt.sign(
-        {
-          id: user.id,
-        },
-        { expiresIn: accessTokenExpDate.toUTCString() },
-      );
+      const accessTokenPayload: AuthTokenPayload = {
+        type: 'access',
+        userId: user.id,
+      };
+      const accessToken = fastify.jwt.sign(accessTokenPayload, {
+        expiresIn: accessTokenExpDate.toUTCString(),
+      });
 
       return reply
         .setCookie(APP_JWT_REFRESH_COOKIE_NAME!, refreshToken, {
@@ -99,25 +110,37 @@ export async function authController(fastify: FastifyInstance) {
 
   fastify.get('/logout', async (req, reply) => {
     const accessToken = req.cookies[APP_JWT_ACCESS_COOKIE_NAME!];
-
     if (!accessToken) {
       return reply.code(401).send({ msg: 'Unauthorized. Reason: not logged in.' });
     }
 
-    const pastDate = new Date();
-    pastDate.setDate(pastDate.getDate() - 7);
+    const refreshTokenFromCookies = req.cookies[APP_JWT_REFRESH_COOKIE_NAME!];
+    if (refreshTokenFromCookies) {
+      const unsignedRefreshTokenFromCookies = req.unsignCookie(
+        refreshTokenFromCookies,
+      ).value;
+
+      if (!unsignedRefreshTokenFromCookies) {
+        return reply
+          .code(401)
+          .send({ msg: 'Unauthorized. Reason: invalid refresh token' });
+      }
+
+      const refreshToken = fastify.jwt.verify<AuthTokenPayloadDecoded>(
+        unsignedRefreshTokenFromCookies,
+      );
+      const refreshTokenFromDatabase = await AuthTokenModel.findOne({
+        where: { userId: refreshToken.userId },
+      });
+
+      if (refreshTokenFromDatabase) {
+        await refreshTokenFromDatabase.destroy();
+      }
+    }
 
     return reply
-      .setCookie(APP_JWT_ACCESS_COOKIE_NAME!, '', {
-        httpOnly: true,
-        signed: true,
-        expires: pastDate,
-      })
-      .setCookie(APP_JWT_REFRESH_COOKIE_NAME!, '', {
-        httpOnly: true,
-        signed: true,
-        expires: pastDate,
-      })
+      .clearCookie(APP_JWT_ACCESS_COOKIE_NAME!)
+      .clearCookie(APP_JWT_REFRESH_COOKIE_NAME!)
       .code(200)
       .send({ msg: 'Logged out successfully' });
   });
