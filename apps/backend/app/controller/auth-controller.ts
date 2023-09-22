@@ -7,6 +7,21 @@ import { UserService } from '../service/user-service';
 import { AuthTokenModel } from '../model/auth-token';
 
 export async function authController(fastify: FastifyInstance) {
+  fastify.addHook('onRequest', (_req, reply, done) => {
+    const mandatoryEnvVariables = [
+      APP_JWT_ACCESS_COOKIE_NAME,
+      APP_JWT_REFRESH_COOKIE_NAME,
+    ];
+
+    if (mandatoryEnvVariables.some((envVar) => !envVar)) {
+      reply
+        .code(500)
+        .send({ msg: 'Internal server error. Reason: invalid environment.' });
+    } else {
+      done();
+    }
+  });
+
   fastify.post<{
     Body: UserCreateDTO & { acceptTermsAndConditions: boolean };
     Reply: { success: true } | { msg: string };
