@@ -29,10 +29,11 @@ export class UserCreateDTO {
   constructor(
     readonly nickname: UserModel['nickname'],
     readonly email: UserModel['email'],
+    readonly password: UserModel['password'],
   ) {}
 
   static from(model: UserModel) {
-    return new UserCreateDTO(model.nickname, model.email);
+    return new UserCreateDTO(model.nickname, model.email, model.password);
   }
 }
 

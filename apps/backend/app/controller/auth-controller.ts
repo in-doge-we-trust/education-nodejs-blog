@@ -38,10 +38,6 @@ export async function authController(fastify: FastifyInstance) {
     };
     Reply: AuthTokenReadDto | { msg: string };
   }>('/sign-in', async (req, reply) => {
-    if (!APP_JWT_ACCESS_COOKIE_NAME || !APP_JWT_REFRESH_COOKIE_NAME) {
-      return reply.code(500).send({ msg: 'Internal server error' });
-    }
-
     const { email, password } = req.body;
 
     const user = await UserService.Admin__getByEmail(email);
@@ -63,7 +59,8 @@ export async function authController(fastify: FastifyInstance) {
           token: refreshToken,
           validUntil: refreshTokenExpDate,
         });
-      } catch {
+      } catch (e) {
+        console.error(e);
         return reply.code(500).send({ msg: 'Internal server error' });
       }
 
@@ -77,13 +74,15 @@ export async function authController(fastify: FastifyInstance) {
       );
 
       return reply
-        .setCookie(APP_JWT_REFRESH_COOKIE_NAME, refreshToken, {
+        .setCookie(APP_JWT_REFRESH_COOKIE_NAME!, refreshToken, {
           httpOnly: true,
           signed: true,
+          expires: refreshTokenExpDate,
         })
-        .setCookie(APP_JWT_ACCESS_COOKIE_NAME, accessToken, {
+        .setCookie(APP_JWT_ACCESS_COOKIE_NAME!, accessToken, {
           httpOnly: true,
           signed: true,
+          expires: accessTokenExpDate,
         })
         .code(200)
         .send({ msg: 'Authenticated successfully' });
@@ -92,21 +91,34 @@ export async function authController(fastify: FastifyInstance) {
     return reply.code(401).send({ msg: 'Incorrect email or password' });
   });
 
-  fastify.get('/token-validate', async (_req, reply) => {
-    // TODO
-
-    reply.code(501).send({ msg: 'Not implemented' });
-  });
-
   fastify.post('/token-refresh', async (_req, reply) => {
     // TODO
 
     reply.code(501).send({ msg: 'Not implemented' });
   });
 
-  fastify.get('/logout', async (_req, reply) => {
-    // TODO
+  fastify.get('/logout', async (req, reply) => {
+    const accessToken = req.cookies[APP_JWT_ACCESS_COOKIE_NAME!];
 
-    reply.code(501).send({ msg: 'Not implemented' });
+    if (!accessToken) {
+      return reply.code(401).send({ msg: 'Unauthorized. Reason: not logged in.' });
+    }
+
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - 7);
+
+    return reply
+      .setCookie(APP_JWT_ACCESS_COOKIE_NAME!, '', {
+        httpOnly: true,
+        signed: true,
+        expires: pastDate,
+      })
+      .setCookie(APP_JWT_REFRESH_COOKIE_NAME!, '', {
+        httpOnly: true,
+        signed: true,
+        expires: pastDate,
+      })
+      .code(200)
+      .send({ msg: 'Logged out successfully' });
   });
 }

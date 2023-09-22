@@ -16,6 +16,7 @@ describe('PostController', () => {
     user = await UserModel.create({
       email: 'test@test.test',
       nickname: 'test',
+      password: '12345678',
     });
   });
 
