@@ -7,7 +7,11 @@ describe('PostService', () => {
   let user: UserModel;
 
   beforeEach(async () => {
-    user = await UserModel.create({ nickname: 'test', email: 'test@test.test' });
+    user = await UserModel.create({
+      nickname: 'test',
+      email: 'test@test.test',
+      password: '12345678',
+    });
   });
 
   describe('getAll', () => {

@@ -6,8 +6,8 @@ describe('UserService', () => {
   describe('getAll', () => {
     test('should return all existing users', async () => {
       await UserModel.bulkCreate([
-        { nickname: 'test1', email: 'test1@gmail.com' },
-        { nickname: 'test2', email: 'test2@gmail.com' },
+        { nickname: 'test1', email: 'test1@gmail.com', password: '12345678' },
+        { nickname: 'test2', email: 'test2@gmail.com', password: '12345678' },
       ]);
       const result = await UserService.getAll();
 
@@ -31,6 +31,7 @@ describe('UserService', () => {
       const user = await UserModel.create({
         nickname: 'test1',
         email: 'test1@gmail.com',
+        password: '12345678',
       });
       const result = await UserService.getById(user.id);
 
@@ -41,7 +42,7 @@ describe('UserService', () => {
   describe('create', () => {
     test('should create user and return it', async () => {
       const user = await UserService.create(
-        new UserCreateDTO('test1', 'test1@gmail.com'),
+        new UserCreateDTO('test1', 'test1@gmail.com', '12345678'),
       );
 
       const userFromDB = await UserModel.findByPk(user.id);
@@ -54,25 +55,27 @@ describe('UserService', () => {
     });
 
     test('when user with such nickname exists, should throw an error', async () => {
-      await UserService.create(new UserCreateDTO('test1', 'test1@gmail.com'));
+      await UserService.create(new UserCreateDTO('test1', 'test1@gmail.com', '12345678'));
 
       await expect(() =>
-        UserService.create(new UserCreateDTO('test1', 'not_test@gmail.com')),
+        UserService.create(new UserCreateDTO('test1', 'not_test@gmail.com', '12345678')),
       ).rejects.toThrow();
     });
 
     test('when user with such email exists, should throw an error', async () => {
-      await UserService.create(new UserCreateDTO('test1', 'test1@gmail.com'));
+      await UserService.create(new UserCreateDTO('test1', 'test1@gmail.com', '12345678'));
 
       await expect(() =>
-        UserService.create(new UserCreateDTO('not_test', 'test1@gmail.com')),
+        UserService.create(new UserCreateDTO('not_test', 'test1@gmail.com', '12345678')),
       ).rejects.toThrow();
     });
   });
 
   describe('update', () => {
     test('should update user entry and return it', async () => {
-      const user = await UserModel.create(new UserCreateDTO('test1', 'test1@gmail.com'));
+      const user = await UserModel.create(
+        new UserCreateDTO('test1', 'test1@gmail.com', '12345678'),
+      );
       const updatedUser = await UserService.update(user.id, new UserUpdateDTO('test2'));
 
       expect(updatedUser).toEqual(
@@ -87,10 +90,15 @@ describe('UserService', () => {
     });
 
     test('when user with such nickname already exists, should throw an error', async () => {
-      await UserModel.create({ nickname: 'test1', email: 'test1@gmail.com' });
+      await UserModel.create({
+        nickname: 'test1',
+        email: 'test1@gmail.com',
+        password: '12345678',
+      });
       const user = await UserModel.create({
         nickname: 'test2',
         email: 'test2@gmail.com',
+        password: '12345678',
       });
 
       await expect(() =>

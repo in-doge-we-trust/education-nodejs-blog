@@ -15,8 +15,8 @@ describe('UserController', () => {
   describe('GET /', () => {
     test('should reply with 200 code and send found users list', async () => {
       const users = await UserModel.bulkCreate([
-        { nickname: 'test1', email: 'test1@gmail.com' },
-        { nickname: 'test2', email: 'test2@gmail.com' },
+        { nickname: 'test1', email: 'test1@gmail.com', password: '12345678' },
+        { nickname: 'test2', email: 'test2@gmail.com', password: '12345678' },
       ]);
       const readResponse = await app.inject({
         path: `${ROUTE_PATH_BASE}`,
@@ -33,7 +33,7 @@ describe('UserController', () => {
       const createResponse = await app.inject({
         path: `${ROUTE_PATH_BASE}`,
         method: 'POST',
-        body: new UserCreateDTO('test1', 'test1@gmail.com'),
+        body: new UserCreateDTO('test1', 'test1@gmail.com', '12345678'),
       });
 
       expect(createResponse.statusCode).toBe(201);
@@ -48,6 +48,7 @@ describe('UserController', () => {
       const user = await UserModel.create({
         nickname: 'test1',
         email: 'test1@gmail.com',
+        password: '12345678',
       });
       const updateResponse = await app.inject({
         method: 'PATCH',
@@ -86,6 +87,7 @@ describe('UserController', () => {
       const user = await UserModel.create({
         nickname: 'test1',
         email: 'test1@gmail.com',
+        password: '12345678',
       });
       const deleteResponse = await app.inject({
         path: `${ROUTE_PATH_BASE}/${user.id}`,
